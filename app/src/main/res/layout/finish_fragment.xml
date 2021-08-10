@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textViewFinishPercent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:textSize="60sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+android:textSize="20sp"
+        android:layout_marginStart="10dp"
+        android:id="@+id/textViewFinishTextInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/finish_info_amount_true_answers"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewFinishPercent" />
+
+    <TextView
+        android:textSize="20sp"
+
+        android:id="@+id/textViewFinishInfoTrueAnswers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/textViewFinishTextInfo"
+        app:layout_constraintTop_toBottomOf="@id/textViewFinishPercent" />
+
+    <TextView
+        android:textSize="20sp"
+
+        android:layout_marginStart="10dp"
+        android:id="@+id/textViewFinishTextInfo2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/amount_false_answers"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewFinishTextInfo" />
+
+    <TextView
+        android:textSize="20sp"
+
+        android:id="@+id/textViewFinishInfoFalseAnswers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/textViewFinishTextInfo2"
+        app:layout_constraintTop_toBottomOf="@id/textViewFinishInfoTrueAnswers" />
+</androidx.constraintlayout.widget.ConstraintLayout>

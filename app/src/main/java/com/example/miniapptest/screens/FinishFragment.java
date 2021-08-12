@@ -21,7 +21,7 @@ public class FinishFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
-        amountTrueAndFalseAnswers = viewModel.getAmountTrueAnswers();
+//        amountTrueAndFalseAnswers = viewModel.getAmountTrueAnswers();
     }
 
     @Nullable
@@ -36,9 +36,9 @@ public class FinishFragment extends Fragment {
         TextView textViewPercent = view.findViewById(R.id.textViewFinishPercent);
         TextView textViewAmountTrueAnswers = view.findViewById(R.id.textViewFinishInfoTrueAnswers);
         TextView textViewAmountFalseAnswers = view.findViewById(R.id.textViewFinishInfoFalseAnswers);
-        textViewPercent.setText(viewModel.getPercentTrueAnswers());
-        textViewAmountTrueAnswers.setText(String.valueOf(amountTrueAndFalseAnswers[0]));
-        textViewAmountFalseAnswers.setText(String.valueOf(amountTrueAndFalseAnswers[1]));
+//        textViewPercent.setText(viewModel.getPercentTrueAnswers());
+//        textViewAmountTrueAnswers.setText(String.valueOf(amountTrueAndFalseAnswers[0]));
+//        textViewAmountFalseAnswers.setText(String.valueOf(amountTrueAndFalseAnswers[1]));
 
 
     }

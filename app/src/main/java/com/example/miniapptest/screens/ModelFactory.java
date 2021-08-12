@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.miniapptest.IUseCase;
 import com.example.miniapptest.UseCases;
 
 public class ModelFactory extends ViewModelProvider.NewInstanceFactory {

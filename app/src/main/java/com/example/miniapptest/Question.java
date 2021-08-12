@@ -3,16 +3,60 @@ package com.example.miniapptest;
 public class Question {
     private String question;
     private String trueAnswer;
-    private String falseAnswer1;
-    private String falseAnswer2;
-    private String falseAnswer3;
+    private String answer1;
+    private String answer2;
+    private String answer3;
+    private String answer4;
+    private String nameResolvedAnswer;
+    private boolean resolved;
+    private int indexOfAnswer;
 
-    public Question(String question, String trueAnswer, String falseAnswer1, String falseAnswer2, String falseAnswer3) {
+
+
+
+    private boolean solvedCorrectly;
+
+    public Question(String question, String answer1, String answer2, String answer3, String answer4, String trueAnswer) {
         this.question = question;
         this.trueAnswer = trueAnswer;
-        this.falseAnswer1 = falseAnswer1;
-        this.falseAnswer2 = falseAnswer2;
-        this.falseAnswer3 = falseAnswer3;
+        this.answer1 = answer1;
+        this.answer2 = answer2;
+        this.answer3 = answer3;
+        this.answer4 = answer4;
+    }
+
+    public boolean isSolvedCorrectly() {
+        return solvedCorrectly;
+    }
+
+    public void setSolvedCorrectly(boolean solvedCorrectly) {
+        this.solvedCorrectly = solvedCorrectly;
+    }
+
+    public int getIndexOfAnswer() {
+        return indexOfAnswer;
+    }
+
+    public void setIndexOfAnswer(int indexOfAnswer) {
+        this.indexOfAnswer = indexOfAnswer;
+    }
+
+    public boolean isResolved() {
+        return resolved;
+    }
+
+    public String getNameResolvedAnswer() {
+        return nameResolvedAnswer;
+    }
+
+    public void setNameResolvedAnswer(String nameResolvedAnswer) {
+        this.nameResolvedAnswer = nameResolvedAnswer;
+    }
+
+
+
+    public void setResolved(boolean resolved) {
+        this.resolved = resolved;
     }
 
     public String getQuestion() {
@@ -23,16 +67,21 @@ public class Question {
         return trueAnswer;
     }
 
-    public String getFalseAnswer1() {
-        return falseAnswer1;
+    public String getAnswer1() {
+        return answer1;
     }
 
-    public String getFalseAnswer2() {
-        return falseAnswer2;
+    public String getAnswer2() {
+        return answer2;
     }
 
-    public String getFalseAnswer3() {
-        return falseAnswer3;
+    public String getAnswer3() {
+        return answer3;
     }
+
+    public String getAnswer4() {
+        return answer4;
+    }
+
 
 }

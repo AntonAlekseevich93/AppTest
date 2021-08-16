@@ -1,14 +1,20 @@
 package com.example.miniapptest.screens;
 
+import android.os.Handler;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.miniapptest.Question;
 import com.example.miniapptest.UseCases;
 
+import java.util.List;
+
+
 public class ViewModel extends androidx.lifecycle.ViewModel {
     private UseCases useCases;
     private MutableLiveData<Question> mutableLiveData;
+    static boolean questionIsLoaded;
 
     public ViewModel(UseCases useCases) {
         this.useCases = useCases;
@@ -24,14 +30,29 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     private void getData() {
         if (useCases.isFirstLaunchApp()) {
-            mutableLiveData.setValue(useCases.getData());
+            Runnable runnable = () -> {
+                mutableLiveData.postValue(useCases.getData());
+                questionIsLoaded = true;
+            };
+            new Thread(runnable).start();
+
         } else {
-            mutableLiveData.setValue(useCases.getQuestion());
+            Runnable runnable2 = () -> {
+                questionIsLoaded = false;
+                mutableLiveData.postValue(useCases.getQuestion());
+                questionIsLoaded = true;
+
+            };
+            new Thread(runnable2).start();
+
         }
+
+
     }
 
     public int getResolvedAnswer() {
-        return mutableLiveData.getValue().getIndexOfAnswer();
+        return useCases.getIndexOfAnswer();
+//        return mutableLiveData.getValue().getIndexOfAnswer();
     }
 
 
@@ -64,4 +85,33 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public boolean answerIsTrue() {
         return useCases.answerIsTrue();
     }
+
+    public void startNewTest() {
+        useCases.startNewTest();
+    }
+
+    public void clearData() {
+        if (mutableLiveData != null) {
+            mutableLiveData = null;
+            System.out.println("Клеар дата во вью моделе");
+        }
+    }
+
+    public String getPercentTrueAnswers() {
+        return useCases.getPercentCorrectAnswers();
+    }
+
+
+    public int[] getAmountTrueAnswers() {
+        return useCases.getAmountTrueAnswers();
+    }
+
+    public List<Question> getListQuestion() {
+        return useCases.getListQuestion();
+    }
+
+    public void firstLaunchApp() {
+        useCases.firstLaunchApp();
+    }
+
 }

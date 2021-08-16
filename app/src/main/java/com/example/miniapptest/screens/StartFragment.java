@@ -8,12 +8,14 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.miniapptest.screens.interfaces.IFragmentStart;
 import com.example.miniapptest.R;
 
 public class StartFragment extends Fragment {
     private IFragmentStart iStartFragment;
-
+    private ViewModel viewModel;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -25,10 +27,18 @@ public class StartFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.start_fragment_layout, container, false);
+
     }
 
     @Override
@@ -41,5 +51,6 @@ public class StartFragment extends Fragment {
                 iStartFragment.startTest();
             }
         });
+        viewModel.firstLaunchApp();
     }
 }

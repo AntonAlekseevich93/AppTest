@@ -6,4 +6,5 @@ public interface IFragmentQuestion {
     public void nextQuestion();
     public void finishTest();
     public void backButton();
+    public void startNewTest();
 }

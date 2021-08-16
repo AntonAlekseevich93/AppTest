@@ -2,6 +2,9 @@ package com.example.miniapptest.screens;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +33,7 @@ public class QuestionsFragment extends Fragment {
     private ViewModel viewModel;
     private Button buttonNextQuestion;
     private Button buttonBack;
+    private Button buttonStartTestAgain;
     private IFragmentQuestion iFragmentQuestion;
 
     private int ID_COLOR_ANSWER_TRUE;
@@ -68,6 +72,7 @@ public class QuestionsFragment extends Fragment {
 
         nextQuestion();
         previousQuestion();
+        startNewTest();
 
 
         LiveData<Question> data = viewModel.loadData();
@@ -75,23 +80,11 @@ public class QuestionsFragment extends Fragment {
             @Override
             public void onChanged(Question question) {
                 setDataToView(question);
+                if (viewModel.checkAnswerIsResolved()) {
+                    setAnswerIsResolved();
+                }
             }
         });
-
-        if(viewModel.checkAnswerIsResolved()){
-            setAnswerIsResolved();
-        }
-
-
-//
-
-    }
-
-    @Override
-    public void onStart() {
-//        if (viewModel.getAnswerIsSelected())
-//            setSelectedAnswer(viewModel.getIndexSelectedAnswer(), viewModel.getSavedSelectedAnswer());
-        super.onStart();
     }
 
 
@@ -121,13 +114,13 @@ public class QuestionsFragment extends Fragment {
         }
     }
 
-    private void setAnswerIsResolved(){
+    private void setAnswerIsResolved() {
         int ID_COLOR_ANSWER;
         if (viewModel.answerIsTrue()) {
             ID_COLOR_ANSWER = ID_COLOR_ANSWER_TRUE;
         } else ID_COLOR_ANSWER = ID_COLOR_ANSWER_FALSE;
 
-        switch (viewModel.getResolvedAnswer()){
+        switch (viewModel.getResolvedAnswer()) {
             case 0:
                 tvAnswerFirst.setBackgroundColor(ID_COLOR_ANSWER);
                 break;
@@ -144,15 +137,20 @@ public class QuestionsFragment extends Fragment {
     }
 
     private void nextQuestion() {
+
         buttonNextQuestion.setOnClickListener(v -> {
-            if (!viewModel.isLastQuestion()) {
+            if (ViewModel.questionIsLoaded) {
                 if (viewModel.checkAnswerIsResolved()) {
-                    viewModel.increaseQuestionNumber();
-                    iFragmentQuestion.nextQuestion();
+                    if (!viewModel.isLastQuestion()) {
+                        viewModel.increaseQuestionNumber();
+                        MainActivity.nameFragmentToBackStack++;
+                        iFragmentQuestion.nextQuestion();
+                    } else iFragmentQuestion.finishTest();
                 } else
                     Toast.makeText(getContext(), "Нужно выбрать ответ", Toast.LENGTH_SHORT).show();
-            } else iFragmentQuestion.finishTest();
+            } else Toast.makeText(getContext(), "Идет загрузка", Toast.LENGTH_SHORT).show();
         });
+
     }
 
     private void previousQuestion() {
@@ -195,6 +193,7 @@ public class QuestionsFragment extends Fragment {
         tvAnswerFourth = view.findViewById(R.id.tvAnswerFourth);
         buttonNextQuestion = view.findViewById(R.id.buttonNext);
         buttonBack = view.findViewById(R.id.buttonBack);
+        buttonStartTestAgain = view.findViewById(R.id.buttonStartTestAgain);
     }
 
     private void setDataToView(Question question) {
@@ -207,9 +206,12 @@ public class QuestionsFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        System.out.println("onDestroyView");
-        super.onDestroyView();
+    private void startNewTest() {
+        buttonStartTestAgain.setOnClickListener(v -> {
+            viewModel.startNewTest();
+            iFragmentQuestion.startNewTest();
+        });
+
     }
+
 }

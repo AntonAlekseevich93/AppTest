@@ -3,10 +3,42 @@
   "trueAnswer": "Активность",
   "falseAnswer1":"Фрагмент",
   "falseAnswer2":"View",
-  "falseAnswer3":"ViewModel"}
+  "falseAnswer3":"ViewModel"},
 
+  {"question": "Чем управляются транзакции во фрагментах?",
+    "trueAnswer": "FragmentManager",
+    "falseAnswer1":"Activity",
+    "falseAnswer2": "Context",
+    "falseAnswer3": "Child Fragment"},
 
+  {"question": "Какой класс используется для создания потоков?",
+    "trueAnswer": "Thread",
+    "falseAnswer1":  "Gson",
+    "falseAnswer2": "String",
+    "falseAnswer3": "Builder"}
 
+,{"question": "Как расшифровывается MVVM",
+    "trueAnswer": "Model-View-ViewModel",
+    "falseAnswer1":"Model-Visible-View-Message",
+    "falseAnswer2": "Message-Visible-ViewModel",
+    "falseAnswer3": "Message-View-VisibleModel"},
 
+  {"question": "Третий месяц года",
+    "trueAnswer": "Март",
+    "falseAnswer1":  "Январь",
+    "falseAnswer2": "Февраль",
+    "falseAnswer3": "Апрель"},
+
+  {"question": "Сколько лап у собаки",
+    "trueAnswer": "Четыре",
+    "falseAnswer1":"Три",
+    "falseAnswer2": "Шесть",
+    "falseAnswer3": "Одна"},
+
+  {"question": "Что есть у ежа",
+    "trueAnswer": "Иголки",
+    "falseAnswer1":"Магнитофон",
+    "falseAnswer2": "Компьютер",
+    "falseAnswer3": "Ничего нету"}
 
 ]}

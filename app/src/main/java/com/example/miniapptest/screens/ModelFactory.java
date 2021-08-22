@@ -3,8 +3,7 @@ package com.example.miniapptest.screens;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.example.miniapptest.UseCases;
+import com.example.miniapptest.usecase.UseCases;
 
 public class ModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final UseCases useCases;
@@ -17,8 +16,8 @@ public class ModelFactory extends ViewModelProvider.NewInstanceFactory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull  Class<T> modelClass) {
-        if (modelClass == com.example.miniapptest.screens.ViewModel.class) {
-            return (T) new com.example.miniapptest.screens.ViewModel(useCases);
+        if (modelClass == com.example.miniapptest.screens.viewmodel.ViewModel.class) {
+            return (T) new com.example.miniapptest.screens.viewmodel.ViewModel(useCases);
         }
 
         return null;

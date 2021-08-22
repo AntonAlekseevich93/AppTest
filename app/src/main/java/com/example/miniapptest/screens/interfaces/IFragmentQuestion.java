@@ -1,10 +1,11 @@
 package com.example.miniapptest.screens.interfaces;
 
-import com.example.miniapptest.Question;
-
 public interface IFragmentQuestion {
-    public void nextQuestion();
-    public void finishTest();
-    public void backButton();
-    public void startNewTest();
+    void nextQuestion();
+
+    void finishTest();
+
+    void backButton();
+
+    void startNewTest();
 }

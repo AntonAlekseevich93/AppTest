@@ -1,64 +1,46 @@
-package com.example.miniapptest.screens;
+package com.example.miniapptest.screens.viewmodel;
 
-import android.os.Handler;
-
+import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-import com.example.miniapptest.Question;
-import com.example.miniapptest.UseCases;
-
+import com.example.miniapptest.screens.question.Question;
+import com.example.miniapptest.usecase.UseCases;
 import java.util.List;
 
 
-public class ViewModel extends androidx.lifecycle.ViewModel {
+public class ViewModel extends androidx.lifecycle.ViewModel implements LifecycleObserver {
     private UseCases useCases;
     private MutableLiveData<Question> mutableLiveData;
-    static boolean questionIsLoaded;
+    public static boolean questionIsLoaded;
 
     public ViewModel(UseCases useCases) {
         this.useCases = useCases;
+        if (mutableLiveData == null) {
+            mutableLiveData = new MutableLiveData<>();
+        }
     }
 
     public LiveData<Question> loadData() {
         if (mutableLiveData == null) {
             mutableLiveData = new MutableLiveData<>();
         }
-        getData();
+        questionIsLoaded = false;
+        mutableLiveData.postValue(useCases.getQuestion());
+        questionIsLoaded = true;
         return mutableLiveData;
     }
 
-    private void getData() {
-        if (useCases.isFirstLaunchApp()) {
-            Runnable runnable = () -> {
-                mutableLiveData.postValue(useCases.getData());
-                questionIsLoaded = true;
-            };
-            new Thread(runnable).start();
-
-        } else {
-            Runnable runnable2 = () -> {
-                questionIsLoaded = false;
-                mutableLiveData.postValue(useCases.getQuestion());
-                questionIsLoaded = true;
-
-            };
-            new Thread(runnable2).start();
-
-        }
-
-
-    }
 
     public int getResolvedAnswer() {
         return useCases.getIndexOfAnswer();
-//        return mutableLiveData.getValue().getIndexOfAnswer();
     }
 
+    public int getIndexTrueAnswer() {
+        return useCases.getIndexTrueAnswer();
+    }
 
     public boolean checkSelectedAnswer(String selectedAnswer, int indexOfSelectedAnswer) {
         return useCases.checkSelectedAnswer(selectedAnswer, indexOfSelectedAnswer);
-
     }
 
     public boolean checkAnswerIsResolved() {
@@ -93,14 +75,12 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public void clearData() {
         if (mutableLiveData != null) {
             mutableLiveData = null;
-            System.out.println("Клеар дата во вью моделе");
         }
     }
 
     public String getPercentTrueAnswers() {
         return useCases.getPercentCorrectAnswers();
     }
-
 
     public int[] getAmountTrueAnswers() {
         return useCases.getAmountTrueAnswers();
@@ -114,4 +94,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         useCases.firstLaunchApp();
     }
 
+    public void setNumberOfQuestionForOverview(int number) {
+        useCases.setNumberOfQuestionForOverview(number);
+    }
+
+    public void returnNumberOfQuestion() {
+        useCases.returnNumberOfQuestion();
+    }
 }

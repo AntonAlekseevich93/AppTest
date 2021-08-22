@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.miniapptest.screens.interfaces.IFragmentStart;
 import com.example.miniapptest.R;
+import com.example.miniapptest.screens.viewmodel.ViewModel;
 
 public class StartFragment extends Fragment {
     private IFragmentStart iStartFragment;

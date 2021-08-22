@@ -4,7 +4,8 @@
     <string name="before_question">Предыдущий вопрос</string>
     <string name="next_question">Следующий вопрос</string>
     <string name="finish_test">Закончить тест</string>
-    <string name="finish_info_amount_true_answers">Количество правильных ответов: </string>
-    <string name="amount_false_answers">Количество неправильных ответов: </string>
+    <string name="finish_info_amount_true_answers">Правильных ответов: </string>
+    <string name="amount_false_answers">Неправильных ответов: </string>
     <string name="start_abroad">Начать заново</string>
+    <string name="back_to_list">Назад к списку</string>
 </resources>

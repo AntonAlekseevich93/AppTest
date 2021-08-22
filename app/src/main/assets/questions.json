@@ -1,0 +1,12 @@
+{"questions":[ {
+  "question": "Что является точкой входа в приложении?",
+  "trueAnswer": "Активность",
+  "falseAnswer1":"Фрагмент",
+  "falseAnswer2":"View",
+  "falseAnswer3":"ViewModel"}
+
+
+
+
+
+]}

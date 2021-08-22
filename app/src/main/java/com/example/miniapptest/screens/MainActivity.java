@@ -6,28 +6,30 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.miniapptest.screens.interfaces.IFinishFragmentListener;
+import com.example.miniapptest.screens.interfaces.IFragmentOverview;
 import com.example.miniapptest.screens.interfaces.IFragmentStart;
 import com.example.miniapptest.R;
-import com.example.miniapptest.UseCases;
+import com.example.miniapptest.usecase.UseCases;
 import com.example.miniapptest.screens.interfaces.IFragmentQuestion;
+import com.example.miniapptest.screens.viewmodel.ViewModel;
 
-import java.util.Objects;
-
-public class MainActivity extends AppCompatActivity implements IFragmentStart, IFragmentQuestion, IFinishFragmentListener {
+public class MainActivity extends AppCompatActivity implements IFragmentStart, IFragmentQuestion, IFinishFragmentListener, IFragmentOverview {
     private FragmentManager fragmentManager;
     private ViewModel viewModel;
     private boolean finishFragmentIsVisible = false;
     private final String KEY_BUNDLE = "KEY_BUNDLE";
-    public static int nameFragmentToBackStack = 0;
+    private UseCases useCases;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
-        UseCases useCases = new UseCases(this);
+        useCases = new UseCases(this);
         viewModel = new ViewModelProvider(this, new ModelFactory(useCases)).get(ViewModel.class);
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction()
@@ -36,8 +38,8 @@ public class MainActivity extends AppCompatActivity implements IFragmentStart, I
         } else {
             finishFragmentIsVisible = savedInstanceState.getBoolean(KEY_BUNDLE);
         }
-
-//        ViewModel viewModel = new ViewModelProvider(this).get(ViewModel.class);
+        getLifecycle().addObserver(useCases);
+        getLifecycle().addObserver(viewModel);
     }
 
     @Override
@@ -50,10 +52,9 @@ public class MainActivity extends AppCompatActivity implements IFragmentStart, I
 
     @Override
     public void nextQuestion() {
-        System.out.println(nameFragmentToBackStack + " нект квестион");
         fragmentManager.beginTransaction()
                 .replace(R.id.containerFrameLayout, new QuestionsFragment())
-                .addToBackStack(String.valueOf(nameFragmentToBackStack))
+                .addToBackStack(null)
                 .commit();
     }
 
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements IFragmentStart, I
     public void finishTest() {
         fragmentManager.beginTransaction()
                 .replace(R.id.containerFrameLayout, new FinishFragment())
-                .addToBackStack("Finish Fragment")
+                .addToBackStack(null)
                 .commit();
         finishFragmentIsVisible = true;
     }
@@ -69,8 +70,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentStart, I
     @Override
     public void backButton() {
         decreaseQuestionNumber();
-        nameFragmentToBackStack--;
-        System.out.println(nameFragmentToBackStack + " бэк буттон");
         fragmentManager.popBackStack();
     }
 
@@ -85,9 +84,15 @@ public class MainActivity extends AppCompatActivity implements IFragmentStart, I
 
     @Override
     public void onBackPressed() {
-        decreaseQuestionNumber();
-        nameFragmentToBackStack--;
-        super.onBackPressed();
+        if (!useCases.isFirstQuestion() && !UseCases.isOverviewResponse) {
+            decreaseQuestionNumber();
+            super.onBackPressed();
+        } else if(UseCases.isOverviewResponse){
+            viewModel.returnNumberOfQuestion();
+            super.onBackPressed();
+        }
+        else Toast.makeText(this, "Это первый вопрос", Toast.LENGTH_SHORT).show();
+
     }
 
     private void clearBackStack() {
@@ -113,6 +118,19 @@ public class MainActivity extends AppCompatActivity implements IFragmentStart, I
 
     @Override
     public void onNumberOnClick(int position) {
-        System.out.println(position);
+        viewModel.setNumberOfQuestionForOverview(position);
+        fragmentManager.beginTransaction()
+                .replace(R.id.containerFrameLayout, new OverviewResponsesFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+
+    @Override
+    public void backToListFromFragmentOverview() {
+        if (UseCases.isOverviewResponse){
+            viewModel.returnNumberOfQuestion();
+            super.onBackPressed();
+        }
     }
 }

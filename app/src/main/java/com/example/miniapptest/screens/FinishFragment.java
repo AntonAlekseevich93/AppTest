@@ -9,16 +9,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.arch.core.util.Function;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.miniapptest.R;
+import com.example.miniapptest.screens.adapter.FinishFragmentAdapter;
 import com.example.miniapptest.screens.interfaces.IFinishFragmentListener;
-
-import androidx.arch.core.util.Function;
+import com.example.miniapptest.screens.viewmodel.ViewModel;
 
 public class FinishFragment extends Fragment {
     private ViewModel viewModel;
@@ -28,18 +28,19 @@ public class FinishFragment extends Fragment {
     private IFinishFragmentListener iFinishFragmentListener;
 
     @Override
-    public void onAttach(@NonNull  Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof IFinishFragmentListener){
+        if (context instanceof IFinishFragmentListener) {
             iFinishFragmentListener = (IFinishFragmentListener) context;
         } else throw new ClassCastException("context can`t be casted to IFinishFragmentListener");
     }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
         amountTrueAndFalseAnswers = viewModel.getAmountTrueAnswers();
-        adapter = new FinishFragmentAdapter(viewModel.getListQuestion(), new Function<Integer, Void>(){
+        adapter = new FinishFragmentAdapter(viewModel.getListQuestion(), new Function<Integer, Void>() {
             @Override
             public Void apply(Integer input) {
                 iFinishFragmentListener.onNumberOnClick(input);
@@ -66,6 +67,5 @@ public class FinishFragment extends Fragment {
         textViewAmountFalseAnswers.setText(String.valueOf(amountTrueAndFalseAnswers[1]));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 5));
-
     }
 }

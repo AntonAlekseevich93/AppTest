@@ -6,62 +6,87 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
     <TextView
         android:id="@+id/textViewFinishPercent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:textAlignment="center"
-        android:textSize="60sp"
+        android:textSize="80sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-android:textSize="20sp"
-        android:layout_marginStart="10dp"
-        android:id="@+id/textViewFinishTextInfo"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/finish_info_amount_true_answers"
+        android:layout_marginHorizontal="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewFinishPercent" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewFinishPercent">
 
-    <TextView
-        android:textSize="20sp"
+        <TextView
+            android:id="@+id/textViewFinishTextInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/finish_info_amount_true_answers"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewFinishPercent" />
 
-        android:id="@+id/textViewFinishInfoTrueAnswers"
-        android:layout_width="wrap_content"
+
+        <TextView
+            android:id="@+id/textViewFinishInfoTrueAnswers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toRightOf="@id/textViewFinishTextInfo"
+            app:layout_constraintTop_toBottomOf="@id/textViewFinishPercent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/textViewFinishTextInfo"
-        app:layout_constraintTop_toBottomOf="@id/textViewFinishPercent" />
-
-    <TextView
-        android:textSize="20sp"
-
-        android:layout_marginStart="10dp"
-        android:id="@+id/textViewFinishTextInfo2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/amount_false_answers"
+        android:layout_marginHorizontal="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewFinishTextInfo" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-    <TextView
-        android:textSize="20sp"
-        android:id="@+id/textViewFinishInfoFalseAnswers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/textViewFinishTextInfo2"
-        app:layout_constraintTop_toBottomOf="@id/textViewFinishInfoTrueAnswers" />
+        <TextView
+            android:id="@+id/textViewFinishTextInfo2"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/amount_false_answers"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewFinishTextInfo" />
+
+        <TextView
+            android:id="@+id/textViewFinishInfoFalseAnswers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toRightOf="@id/textViewFinishTextInfo2"
+            app:layout_constraintTop_toBottomOf="@id/textViewFinishInfoTrueAnswers" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_marginHorizontal="10dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFinishTextInfo2" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

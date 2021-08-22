@@ -1,38 +1,30 @@
-package com.example.miniapptest.screens;
-
-import android.content.res.Resources;
+package com.example.miniapptest.screens.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.miniapptest.Question;
-import com.example.miniapptest.R;
-
-import java.util.List;
 import androidx.arch.core.util.Function;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.miniapptest.screens.question.Question;
+import com.example.miniapptest.R;
+import java.util.List;
 
 public class FinishFragmentAdapter extends RecyclerView.Adapter<FinishFragmentAdapter.FinishFragmentViewHolder> {
     private final List<Question> list;
     private final int TYPE_TRUE = 0;
     private final int TYPE_FALSE = 1;
-    private Function<Integer, Void> mListener;
+    private final Function<Integer, Void> mListener;
 
     public FinishFragmentAdapter(List<Question> list, Function<Integer, Void> clickListener) {
         this.list = list;
         mListener = clickListener;
-
     }
 
     @Override
     public int getItemViewType(int position) {
         if (list.get(position).isSolvedCorrectly()) return TYPE_TRUE;
         else return TYPE_FALSE;
-
     }
 
     @NonNull
@@ -55,7 +47,6 @@ public class FinishFragmentAdapter extends RecyclerView.Adapter<FinishFragmentAd
                 holder.textView.setBackground(holder.itemView.getResources().getDrawable(R.drawable.rounded_corner_false));
                 break;
         }
-
     }
 
     @Override

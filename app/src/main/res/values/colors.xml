@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="true_answer">#59E128</color>
     <color name="false_answer">#F44336</color>
+    <color name="correct_answer">#FFEB3B</color>
+
 </resources>

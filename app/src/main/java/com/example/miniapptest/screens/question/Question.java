@@ -1,4 +1,4 @@
-package com.example.miniapptest;
+package com.example.miniapptest.screens.question;
 
 import java.io.Serializable;
 
@@ -11,12 +11,8 @@ public class Question implements Serializable {
     private String answer4;
     private String nameResolvedAnswer;
     private boolean resolved;
-    private int indexOfAnswer;
-
-
-
-
     private boolean solvedCorrectly;
+    private int indexOfAnswer;
 
     public Question(String question, String answer1, String answer2, String answer3, String answer4, String trueAnswer) {
         this.question = question;
@@ -54,8 +50,6 @@ public class Question implements Serializable {
     public void setNameResolvedAnswer(String nameResolvedAnswer) {
         this.nameResolvedAnswer = nameResolvedAnswer;
     }
-
-
 
     public void setResolved(boolean resolved) {
         this.resolved = resolved;

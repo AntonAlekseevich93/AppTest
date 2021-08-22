@@ -2,9 +2,6 @@ package com.example.miniapptest.screens;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +16,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.miniapptest.Question;
+import com.example.miniapptest.screens.question.Question;
 import com.example.miniapptest.R;
 import com.example.miniapptest.screens.interfaces.IFragmentQuestion;
+import com.example.miniapptest.screens.viewmodel.ViewModel;
 
 public class QuestionsFragment extends Fragment {
-
     private TextView tvShowQuestions;
     private TextView tvAnswerFirst;
     private TextView tvAnswerSecond;
@@ -35,7 +32,6 @@ public class QuestionsFragment extends Fragment {
     private Button buttonBack;
     private Button buttonStartTestAgain;
     private IFragmentQuestion iFragmentQuestion;
-
     private int ID_COLOR_ANSWER_TRUE;
     private int ID_COLOR_ANSWER_FALSE;
 
@@ -53,7 +49,6 @@ public class QuestionsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
-
     }
 
     @Override
@@ -65,28 +60,23 @@ public class QuestionsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializationViews(view);
-
         ID_COLOR_ANSWER_TRUE = view.getResources().getColor(R.color.true_answer);
         ID_COLOR_ANSWER_FALSE = view.getResources().getColor(R.color.false_answer);
         setOnClickListenerToTextView();
-
-        nextQuestion();
-        previousQuestion();
-        startNewTest();
-
-
+        setClickListenerNextQuestion();
+        setClickListenerPreviousQuestion();
+        setClickListenerStartNewTest();
         LiveData<Question> data = viewModel.loadData();
         data.observe(getViewLifecycleOwner(), new Observer<Question>() {
             @Override
             public void onChanged(Question question) {
                 setDataToView(question);
                 if (viewModel.checkAnswerIsResolved()) {
-                    setAnswerIsResolved();
+                    setColorAnswerIsResolved();
                 }
             }
         });
     }
-
 
     private void setOnClickListenerToTextView() {
         tvAnswerFirst.setOnClickListener(v -> {
@@ -114,7 +104,7 @@ public class QuestionsFragment extends Fragment {
         }
     }
 
-    private void setAnswerIsResolved() {
+    private void setColorAnswerIsResolved() {
         int ID_COLOR_ANSWER;
         if (viewModel.answerIsTrue()) {
             ID_COLOR_ANSWER = ID_COLOR_ANSWER_TRUE;
@@ -136,14 +126,12 @@ public class QuestionsFragment extends Fragment {
         }
     }
 
-    private void nextQuestion() {
-
+    private void setClickListenerNextQuestion() {
         buttonNextQuestion.setOnClickListener(v -> {
             if (ViewModel.questionIsLoaded) {
                 if (viewModel.checkAnswerIsResolved()) {
                     if (!viewModel.isLastQuestion()) {
                         viewModel.increaseQuestionNumber();
-                        MainActivity.nameFragmentToBackStack++;
                         iFragmentQuestion.nextQuestion();
                     } else iFragmentQuestion.finishTest();
                 } else
@@ -153,37 +141,12 @@ public class QuestionsFragment extends Fragment {
 
     }
 
-    private void previousQuestion() {
-
+    private void setClickListenerPreviousQuestion() {
         buttonBack.setOnClickListener(v -> {
             if (!viewModel.isFirstQuestion()) iFragmentQuestion.backButton();
             else Toast.makeText(getContext(), "Это первый вопрос", Toast.LENGTH_SHORT).show();
         });
-//        viewModel.decreaseQuestionNumber();
     }
-
-    private void setSelectedAnswer(int indexOfAnswer, boolean selectedAnswer) {
-        int ID_COLOR_ANSWER;
-        if (selectedAnswer) {
-            ID_COLOR_ANSWER = ID_COLOR_ANSWER_TRUE;
-        } else ID_COLOR_ANSWER = ID_COLOR_ANSWER_FALSE;
-
-        switch (indexOfAnswer) {
-            case 0:
-                tvAnswerFirst.setBackgroundColor(ID_COLOR_ANSWER);
-                break;
-            case 1:
-                tvAnswerSecond.setBackgroundColor(ID_COLOR_ANSWER);
-                break;
-            case 2:
-                tvAnswerThird.setBackgroundColor(ID_COLOR_ANSWER);
-                break;
-            case 3:
-                tvAnswerFourth.setBackgroundColor(ID_COLOR_ANSWER);
-                break;
-        }
-    }
-
 
     private void initializationViews(View view) {
         tvShowQuestions = view.findViewById(R.id.tvShowQuestions);
@@ -206,12 +169,11 @@ public class QuestionsFragment extends Fragment {
         }
     }
 
-    private void startNewTest() {
+    private void setClickListenerStartNewTest() {
         buttonStartTestAgain.setOnClickListener(v -> {
             viewModel.startNewTest();
             iFragmentQuestion.startNewTest();
         });
-
     }
 
 }

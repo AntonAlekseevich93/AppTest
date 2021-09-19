@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.miniapptest.screens.interfaces.IFragmentStart;
 import com.example.miniapptest.R;
 import com.example.miniapptest.screens.viewmodel.ViewModel;
+import com.example.miniapptest.support.EnumEvent;
 
 public class StartFragment extends Fragment {
     private IFragmentStart iStartFragment;
@@ -25,21 +26,18 @@ public class StartFragment extends Fragment {
             iStartFragment = (IFragmentStart) context;
         } else
             throw new RuntimeException(context.toString() + "must implement IFragmentDataListener");
-
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
-
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.start_fragment_layout, container, false);
-
     }
 
     @Override
@@ -52,6 +50,6 @@ public class StartFragment extends Fragment {
                 iStartFragment.startTest();
             }
         });
-        viewModel.firstLaunchApp();
+        viewModel.loadData(EnumEvent.NEW_TEST, 0);
     }
 }

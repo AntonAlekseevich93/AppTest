@@ -31,7 +31,7 @@ public class Question implements Serializable {
         this.solvedCorrectly = solvedCorrectly;
     }
 
-    public int getIndexOfAnswer() {
+    public int getIndexOfResolvedAnswer() {
         return indexOfAnswer;
     }
 
@@ -49,6 +49,9 @@ public class Question implements Serializable {
 
     public void setNameResolvedAnswer(String nameResolvedAnswer) {
         this.nameResolvedAnswer = nameResolvedAnswer;
+        if(answerIsTrue()) solvedCorrectly = true;
+        else solvedCorrectly = false;
+        resolved = true;
     }
 
     public void setResolved(boolean resolved) {
@@ -79,5 +82,15 @@ public class Question implements Serializable {
         return answer4;
     }
 
+    public boolean answerIsTrue() {
+        return nameResolvedAnswer.equals(trueAnswer);
+    }
+
+    public int getIndexCorrectAnswer() {
+        if (answer1.equals(trueAnswer)) return 0;
+        else if (answer2.equals(trueAnswer)) return 1;
+        else if (answer3.equals(trueAnswer)) return 2;
+        else return 3;
+    }
 
 }

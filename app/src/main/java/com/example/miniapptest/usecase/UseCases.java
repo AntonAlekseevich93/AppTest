@@ -2,271 +2,274 @@ package com.example.miniapptest.usecase;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
-import androidx.lifecycle.Lifecycle;
+
 import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.OnLifecycleEvent;
-import com.example.miniapptest.repository.TestRepository;
+
+import com.example.miniapptest.repository.DataRepository;
 import com.example.miniapptest.screens.question.Question;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import com.example.miniapptest.support.EnumEvent;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UseCases implements LifecycleObserver {
-    private TestRepository testRepository;
-    private List<Question> listOfQuestions = new ArrayList<>();
-    private final String APP_PREFERENCES = "mysettings";
-    private final String APP_PREFERENCES_QUESTION_NUMBER = "QuestionNumber";
-    private final String APP_PREFERENCES_QUESTION_NUMBER_FOR_OVERVIEW = "QuestionNumberOverview";
-    private final String APP_PREFERENCES_IS_OVERVIEW_RESPONSE = "isOverviewResponse";
-    private int lastNumberForSaved;
-    private static int indexCorrectAnswer;
-    private SharedPreferences sharedPreferences;
-    private static boolean firstLaunch = false;
+public class UseCases {
+    private DataRepository dataRepository;
+//    private List<Question> listOfQuestions = new ArrayList<>();
+
+    //    private int lastNumberForSaved;
+//    private static int indexCorrectAnswer;
+//
+//    private static boolean firstLaunch = false;
     private static int questionNumber = -1;
-    private Context context;
-    private final String FILE_NAME = "DATA";
-    public static boolean isOverviewResponse = false;
+    //    private Context context;
+    //    private final String FILE_NAME = "DATA";
+//    public static boolean isOverviewResponse = false;
+    private Question question;
+    private boolean isFirstQuestion;
+    private boolean isLastQuestion;
 
-
-    public UseCases(Context context) {
-        this.context = context;
-        testRepository = new TestRepository(context);
-        sharedPreferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+    public UseCases(DataRepository dataRepository) {
+        this.dataRepository = dataRepository;
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    public void getData() {
-        Runnable runnable = () -> {
-            if (isDataFileFound()) {
-                if (!firstLaunch) {
-                    getSavedQuestionNumber();
-                    getNumberOfQuestionForOverview();
-                } else {
-                    firstLaunch = false;
-                    questionNumber++;
-                    saveQuestionNumber();
-                }
-                listOfQuestions.clear();
-                listOfQuestions.addAll(getDataFromFile());
-
-
-            } else {
-                listOfQuestions.clear();
-                listOfQuestions.addAll(testRepository.getDataFromJSON());
-                questionNumber++;
-                saveQuestionNumber();
-            }
-        };
-        new Thread(runnable).start();
-    }
-
-    public Question getQuestion() {
-        if (questionNumber == -1) questionNumber = 0;
-        if (listOfQuestions.size() > 0)
-            return listOfQuestions.get(questionNumber);
-        else return null;
-    }
-
-    public boolean checkSelectedAnswer(String checkAnswer, int indexOfAnswer) {
-        listOfQuestions.get(questionNumber).setResolved(true);
-        listOfQuestions.get(questionNumber).setIndexOfAnswer(indexOfAnswer);
-        if (listOfQuestions.get(questionNumber).getTrueAnswer().equals(checkAnswer)) {
-            listOfQuestions.get(questionNumber).setSolvedCorrectly(true);
-            listOfQuestions.get(questionNumber).setNameResolvedAnswer(checkAnswer);
-            return true;
-        } else {
-            listOfQuestions.get(questionNumber).setNameResolvedAnswer(checkAnswer);
-            listOfQuestions.get(questionNumber).setSolvedCorrectly(false);
-            return false;
-        }
-
-    }
-
-    public boolean checkAnswerIsResolved() {
-        if (questionNumber == -1) return false;
-        else return listOfQuestions.get(questionNumber).isResolved();
-    }
-
-    public boolean isLastQuestion() {
-        return questionNumber + 1 == listOfQuestions.size();
-    }
-
-    public boolean isFirstQuestion() {
-        return questionNumber == 0;
-    }
-
-    public int numberOfCorrectAnswer() {
-        int score = 0;
-        for (Question q : listOfQuestions) {
-            int count;
-            if (q.isSolvedCorrectly()) count = 1;
-            else count = 0;
-            score = score + count;
-        }
-        return score;
-    }
-
-    public String getPercentCorrectAnswers() {
-        double percent = (double) numberOfCorrectAnswer() / listOfQuestions.size() * 100;
-        String format = new DecimalFormat("##").format(percent);
-        return format + "%";
-    }
-
-    public void increaseQuestionNumber() {
-        if (questionNumber + 1 < listOfQuestions.size()) {
-            questionNumber++;
-            saveQuestionNumber();
-        }
-    }
-
-    public void decreaseQuestionNumber() {
-        if (questionNumber != 0) {
-            questionNumber--;
-            saveQuestionNumber();
-        }
-    }
-
-    public boolean answerIsTrue() {
-        Question q = listOfQuestions.get(questionNumber);
-        return q.getNameResolvedAnswer().equals(q.getTrueAnswer());
-    }
-
-    public int getIndexOfAnswer() {
-        return listOfQuestions.get(questionNumber).getIndexOfAnswer();
-    }
-
-    public int getIndexTrueAnswer() {
-        String answer = listOfQuestions.get(questionNumber).getTrueAnswer();
-        Question question = listOfQuestions.get(questionNumber);
-
-        if (question.getAnswer1().equals(answer)) indexCorrectAnswer = 0;
-        else if (question.getAnswer2().equals(answer)) indexCorrectAnswer = 1;
-        else if (question.getAnswer3().equals(answer)) indexCorrectAnswer = 2;
-        else indexCorrectAnswer = 3;
-        return indexCorrectAnswer;
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    public void saveData() {
-        if (listOfQuestions.size() != 0) {
-            Runnable runnable = () -> {
-                FileOutputStream fileOutputStream;
-                try {
-                    fileOutputStream = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
-                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                    objectOutputStream.writeObject(listOfQuestions);
-                    objectOutputStream.close();
-                    Log.i("DATA", "Data saved successfully");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            };
-            Thread thread = new Thread(runnable);
-            thread.start();
-        }
-    }
-
-
-    private boolean isDataFileFound() {
-        String[] fileDir = context.fileList();
-        boolean fileIsFound = false;
-        for (String s : fileDir) {
-            if (s.equals(FILE_NAME)) {
-                fileIsFound = true;
+    public Question getQuestion(EnumEvent enumEvent, int index) {
+        switch (enumEvent) {
+            case START_NEW_TEST:
+                dataRepository.startNewTest();
+                questionNumber = 0;
                 break;
-            }
+
+            case NEW_TEST:
+//            case LAST_TEST:
+                questionNumber = 0;
+                break;
+
+            case BEFORE_QUESTION:
+                if (!isLastQuestion) decreaseQuestionNumber();
+                else isLastQuestion = false;
+                break;
+
+            case OVERVIEW_QUESTION:
+                question = dataRepository.getData(enumEvent, index);
+                return question;
         }
-        return fileIsFound;
+        question = dataRepository.getData(enumEvent, questionNumber);
+        return question;
     }
 
-    private List<Question> getDataFromFile() {
-        FileInputStream fileInputStream;
-        List<Question> list = null;
-        try {
-            fileInputStream = context.openFileInput(FILE_NAME);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            list = (List<Question>) objectInputStream.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+
+
+    /**
+     * Вызывается при нажатии на кнопку "Следующий вопрос". Если пользователь выбрал ответ,
+     * то будет либо открыт следующий вопрос либо завершен тест. Если ответ не выбран, будет отправлено
+     * сообытие о том, что ответ еще не выбран и переход к следующему вопросу не возможен.
+     *
+     * @return возвращает события: либо следующий вопрос, либо завершить тест, либо необходимо выбрать ответ
+     */
+    public EnumEvent getEventForClickNextQuestion() {
+        if (question.isResolved()) {
+            return getEventForNextQuestion();
+        } else return EnumEvent.QUESTION_IS_NOT_RESOLVED;
+    }
+
+    /**
+     * Получает событие которое необходимо выполнить когда пользователь нажимает на кнопку
+     * "следующий вопрос". Если в списке еще есть вопросы - откроется следующий вопрос. Если в списке
+     * отсутсвуют вопросы, будет открыт фрагмент с результатами теста
+     *
+     * @return возвращает событие либо открыть следующий вопрос либо завершить тест
+     */
+    public EnumEvent getEventForNextQuestion() {
+        if (sizeOfListIsCorrect()) {
+            increaseQuestionNumber();
+            return EnumEvent.NEXT_QUESTION;
+        } else {
+            isLastQuestion = true;
+            return EnumEvent.FINISH_TEST;
         }
-        return list;
-    }
-
-    public void startNewTest() {
-        if (isDataFileFound()) context.deleteFile(FILE_NAME);
-        questionNumber = -1;
-        getData();
-        Log.i("DATA", "the file was successfully deleted");
     }
 
 
+    /**
+     * Проверяет решен ли пользователем данный вопрос
+     *
+     * @return возвращает true если вопрос решен
+     */
+    public boolean checkAnswerIsResolved() {
+        return question.isResolved();
+    }
+
+    /**
+     * Проверяет и сохраняет ответ пользователя
+     *
+     * @param checkAnswer   выбранный ответ пользователем
+     * @param indexOfAnswer индекс выбранного ответа
+     * @return возвращает true если ответ пользователя правильный
+     */
+    public boolean checkSelectedAnswer(String checkAnswer, int indexOfAnswer) {
+        question.setIndexOfAnswer(indexOfAnswer);
+        question.setNameResolvedAnswer(checkAnswer);
+        return question.isSolvedCorrectly();
+    }
+
+
+    /**
+     * Увеличивает переменную номера вопроса. Если переменная равна 0,
+     * то предполагается, что открыт первый вопрос и переменной isFirstQuestion присваивается false
+     * Переменная isFirstQuestion позволяет отслеживать первый вопрос, чтобы уведомить пользователя
+     * что он находится на первом вопросе и кнопка BACK не срабатывала
+     */
+    public void increaseQuestionNumber() {
+        if (questionNumber == 0) isFirstQuestion = false;
+        if (sizeOfListIsCorrect()) {
+            questionNumber++;
+        }
+    }
+
+    /**
+     * Уменьшает переменную номера вопроса.
+     * Переменная isFirstQuestion позволяет отслеживать первый вопрос, чтобы уведомить пользователя
+     * что он находится на первом вопросе и кнопка BACK не срабатывала
+     */
+    public void decreaseQuestionNumber() {
+        if (questionNumber > 0)
+            questionNumber--;
+        else isFirstQuestion = true;
+    }
+
+    /**
+     * @return возвращает true если пользователь находится на первом вопросе
+     */
+    public boolean isFirstQuestion() {
+        return isFirstQuestion;
+    }
+
+    /**
+     * @return возвращает index выбранного ответа
+     */
+    public int getIndexOfAnswer() {
+        return question.getIndexOfResolvedAnswer();
+    }
+
+    /**
+     * @return возвращает true если вопрос решен правильно
+     */
+    public boolean answerIsTrue() {
+        return question.answerIsTrue();
+    }
+
+    /**
+     * Проверяет есть ли следующий вопрос в списке
+     *
+     * @return возвращает true если в списке есть следующий вопрос
+     */
+    private boolean sizeOfListIsCorrect() {
+        return questionNumber + 1 < dataRepository.sizeOfList();
+    }
+
+    /**
+     * Расчитывает количество правильных ответов
+     *
+     * @return возвращает массив с количеством правильных и неправильных ответов
+     */
     public int[] getAmountTrueAnswers() {
         int[] m = new int[2];
-        int i = numberOfCorrectAnswer();
+        int i = dataRepository.numberOfCorrectAnswer();
         m[0] = i;
-        m[1] = listOfQuestions.size() - i;
+        m[1] = dataRepository.getSizeOfQuestionsList() - i;
         return m;
     }
 
+    /**
+     * Высчитывает % правильных ответов и форматирует в формат без запятой
+     *
+     * @return возвращает String процент правильных ответов
+     */
+    public String getPercentCorrectAnswers() {
+        int numberOfCorrectAnswer = dataRepository.numberOfCorrectAnswer();
+        int listSize = dataRepository.getSizeOfQuestionsList();
+        float result = (float) numberOfCorrectAnswer / listSize * 100;
+        String format = new DecimalFormat("##").format(result);
+        return format + "%";
 
-    private void saveQuestionNumber() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(APP_PREFERENCES_QUESTION_NUMBER, questionNumber);
-        editor.apply();
+
+//        String format = new DecimalFormat("##").format(percent);
+//        return format + "%";
+//        return String.valueOf(dataRepository.getPercentCorrectAnswers());
     }
 
-    private void saveNumberOfQuestionForOverview() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(APP_PREFERENCES_QUESTION_NUMBER_FOR_OVERVIEW, lastNumberForSaved);
-        editor.putBoolean(APP_PREFERENCES_IS_OVERVIEW_RESPONSE, isOverviewResponse);
-        editor.apply();
+    public List<Question> getListQuestions() {
+        return dataRepository.getListQuestions();
     }
 
-    public void getSavedQuestionNumber() {
-        if (sharedPreferences.contains(APP_PREFERENCES_QUESTION_NUMBER)) {
-            questionNumber = sharedPreferences.getInt(APP_PREFERENCES_QUESTION_NUMBER, -1);
-        }
+    public int getIndexCorrectAnswer(){
+        if(question.getAnswer1().equals(question.getTrueAnswer())) return 0;
+        else if(question.getAnswer2().equals(question.getTrueAnswer())) return 1;
+        else if (question.getAnswer3().equals(question.getTrueAnswer())) return 2;
+        else return 3;
     }
 
-    private int getNumberOfQuestionForOverview() {
-        if (sharedPreferences.contains(APP_PREFERENCES_QUESTION_NUMBER_FOR_OVERVIEW) && sharedPreferences.contains(APP_PREFERENCES_IS_OVERVIEW_RESPONSE)) {
-            lastNumberForSaved = sharedPreferences.getInt(APP_PREFERENCES_QUESTION_NUMBER_FOR_OVERVIEW, -1);
-            isOverviewResponse = sharedPreferences.getBoolean(APP_PREFERENCES_IS_OVERVIEW_RESPONSE, false);
-        }
-        return lastNumberForSaved;
-    }
+//    public boolean checkAnswerIsResolved() {
+//        if (questionNumber == -1) return false;
+//        else return listOfQuestions.get(questionNumber).isResolved();
+//    }
 
-    public List<Question> getListQuestion() {
-        return listOfQuestions;
-    }
-
-    public void firstLaunchApp() {
-        questionNumber = -1;
-        firstLaunch = true;
-    }
+//    public boolean isLastQuestion() {
+//        return questionNumber + 1 == listOfQuestions.size();
+//    }
 
 
-    public void setNumberOfQuestionForOverview(int number) {
-        lastNumberForSaved = questionNumber;
-        isOverviewResponse = true;
-        saveNumberOfQuestionForOverview();
-        questionNumber = number;
-        saveQuestionNumber();
+//
 
-    }
+//
 
-    public void returnNumberOfQuestion() {
-        questionNumber = getNumberOfQuestionForOverview();
-        isOverviewResponse = false;
-        saveQuestionNumber();
-        saveNumberOfQuestionForOverview();
-    }
+//    private void saveQuestionNumber() {
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putInt(APP_PREFERENCES_QUESTION_NUMBER, questionNumber);
+//        editor.apply();
+//    }
+//
+//    private void saveNumberOfQuestionForOverview() {
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putInt(APP_PREFERENCES_QUESTION_NUMBER_FOR_OVERVIEW, lastNumberForSaved);
+//        editor.putBoolean(APP_PREFERENCES_IS_OVERVIEW_RESPONSE, isOverviewResponse);
+//        editor.apply();
+//    }
+//
+//
+//
+//    private int getNumberOfQuestionForOverview() {
+//        if (sharedPreferences.contains(APP_PREFERENCES_QUESTION_NUMBER_FOR_OVERVIEW) && sharedPreferences.contains(APP_PREFERENCES_IS_OVERVIEW_RESPONSE)) {
+//            lastNumberForSaved = sharedPreferences.getInt(APP_PREFERENCES_QUESTION_NUMBER_FOR_OVERVIEW, -1);
+//            isOverviewResponse = sharedPreferences.getBoolean(APP_PREFERENCES_IS_OVERVIEW_RESPONSE, false);
+//        }
+//        return lastNumberForSaved;
+//    }
+//
+
+//
+//    public void firstLaunchApp() {
+//        questionNumber = -1;
+//        firstLaunch = true;
+//    }
+//
+//
+//    public void setNumberOfQuestionForOverview(int number) {
+//        lastNumberForSaved = questionNumber;
+//        isOverviewResponse = true;
+//        saveNumberOfQuestionForOverview();
+//        questionNumber = number;
+//        saveQuestionNumber();
+//
+//    }
+//
+//    public void returnNumberOfQuestion() {
+//        questionNumber = getNumberOfQuestionForOverview();
+//        isOverviewResponse = false;
+//        saveQuestionNumber();
+//        saveNumberOfQuestionForOverview();
+//    }
 
 
 }

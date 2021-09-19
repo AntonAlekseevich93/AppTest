@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,7 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.miniapptest.R;
 import com.example.miniapptest.screens.adapter.FinishFragmentAdapter;
 import com.example.miniapptest.screens.interfaces.IFinishFragmentListener;
+import com.example.miniapptest.screens.interfaces.IFragmentQuestion;
 import com.example.miniapptest.screens.viewmodel.ViewModel;
+import com.example.miniapptest.support.EnumEvent;
 
 public class FinishFragment extends Fragment {
     private ViewModel viewModel;
@@ -26,6 +29,7 @@ public class FinishFragment extends Fragment {
     private RecyclerView recyclerView;
     private FinishFragmentAdapter adapter;
     private IFinishFragmentListener iFinishFragmentListener;
+    private Button buttonStartTestAgain;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -40,7 +44,7 @@ public class FinishFragment extends Fragment {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
         amountTrueAndFalseAnswers = viewModel.getAmountTrueAnswers();
-        adapter = new FinishFragmentAdapter(viewModel.getListQuestion(), new Function<Integer, Void>() {
+        adapter = new FinishFragmentAdapter(viewModel.getListQuestions(), new Function<Integer, Void>() {
             @Override
             public Void apply(Integer input) {
                 iFinishFragmentListener.onNumberOnClick(input);
@@ -62,6 +66,11 @@ public class FinishFragment extends Fragment {
         TextView textViewPercent = view.findViewById(R.id.textViewFinishPercent);
         TextView textViewAmountTrueAnswers = view.findViewById(R.id.textViewFinishInfoTrueAnswers);
         TextView textViewAmountFalseAnswers = view.findViewById(R.id.textViewFinishInfoFalseAnswers);
+        buttonStartTestAgain = view.findViewById(R.id.buttonFinishFragmentStartNewTest);
+        buttonStartTestAgain.setOnClickListener(v -> {
+            viewModel.startNewTest(EnumEvent.START_NEW_TEST);
+            iFinishFragmentListener.startNewTestFromFinishFragment();
+        });
         textViewPercent.setText(viewModel.getPercentTrueAnswers());
         textViewAmountTrueAnswers.setText(String.valueOf(amountTrueAndFalseAnswers[0]));
         textViewAmountFalseAnswers.setText(String.valueOf(amountTrueAndFalseAnswers[1]));

@@ -1,7 +1,9 @@
 package com.example.miniapptest.screens;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,9 @@ import com.example.miniapptest.screens.question.Question;
 import com.example.miniapptest.R;
 import com.example.miniapptest.screens.interfaces.IFragmentQuestion;
 import com.example.miniapptest.screens.viewmodel.ViewModel;
+import com.example.miniapptest.support.EnumEvent;
+
+import org.w3c.dom.ls.LSOutput;
 
 public class QuestionsFragment extends Fragment {
     private TextView tvShowQuestions;
@@ -66,12 +71,13 @@ public class QuestionsFragment extends Fragment {
         setClickListenerNextQuestion();
         setClickListenerPreviousQuestion();
         setClickListenerStartNewTest();
-        LiveData<Question> data = viewModel.loadData();
+
+        LiveData<Question> data = viewModel.loadData(EnumEvent.START_FRAGMENT, 0);
         data.observe(getViewLifecycleOwner(), new Observer<Question>() {
             @Override
             public void onChanged(Question question) {
                 setDataToView(question);
-                if (viewModel.checkAnswerIsResolved()) {
+                if (viewModel.getEventBoolean(EnumEvent.CHECK_ANSWER_IS_RESOLVED)) {
                     setColorAnswerIsResolved();
                 }
             }
@@ -97,20 +103,38 @@ public class QuestionsFragment extends Fragment {
     }
 
     private void selectAnswer(TextView view, int indexSelectedAnswer) {
-        if (!viewModel.checkAnswerIsResolved()) {
-            boolean answerIsTrue = viewModel.checkSelectedAnswer(view.getText().toString(), indexSelectedAnswer);
-            if (answerIsTrue) view.setBackgroundColor(ID_COLOR_ANSWER_TRUE);
+        String selectedAnswer = view.getText().toString();
+        if (!viewModel.getEventBoolean(EnumEvent.CHECK_ANSWER_IS_RESOLVED)) {
+            if (viewModel.checkSelectedAnswer(selectedAnswer, indexSelectedAnswer))
+                view.setBackgroundColor(ID_COLOR_ANSWER_TRUE);
             else view.setBackgroundColor(ID_COLOR_ANSWER_FALSE);
         }
     }
 
+    private void setClickListenerNextQuestion() {
+        buttonNextQuestion.setOnClickListener(v -> {
+            switch (viewModel.getEventForClickNextQuestion()) {
+                case NEXT_QUESTION:
+                    iFragmentQuestion.nextQuestion();
+                    break;
+                case FINISH_TEST:
+                    iFragmentQuestion.finishTest();
+                    break;
+                case QUESTION_IS_NOT_RESOLVED:
+                    Toast.makeText(getContext(), "Нужно выбрать ответ", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        });
+
+    }
+
     private void setColorAnswerIsResolved() {
         int ID_COLOR_ANSWER;
-        if (viewModel.answerIsTrue()) {
+        if (viewModel.getEventBoolean(EnumEvent.CHECK_ANSWER_IS_TRUE)) {
             ID_COLOR_ANSWER = ID_COLOR_ANSWER_TRUE;
         } else ID_COLOR_ANSWER = ID_COLOR_ANSWER_FALSE;
 
-        switch (viewModel.getResolvedAnswer()) {
+        switch (viewModel.getIndexOfResolvedAnswer()) {
             case 0:
                 tvAnswerFirst.setBackgroundColor(ID_COLOR_ANSWER);
                 break;
@@ -126,24 +150,9 @@ public class QuestionsFragment extends Fragment {
         }
     }
 
-    private void setClickListenerNextQuestion() {
-        buttonNextQuestion.setOnClickListener(v -> {
-            if (ViewModel.questionIsLoaded) {
-                if (viewModel.checkAnswerIsResolved()) {
-                    if (!viewModel.isLastQuestion()) {
-                        viewModel.increaseQuestionNumber();
-                        iFragmentQuestion.nextQuestion();
-                    } else iFragmentQuestion.finishTest();
-                } else
-                    Toast.makeText(getContext(), "Нужно выбрать ответ", Toast.LENGTH_SHORT).show();
-            } else Toast.makeText(getContext(), "Идет загрузка", Toast.LENGTH_SHORT).show();
-        });
-
-    }
-
     private void setClickListenerPreviousQuestion() {
         buttonBack.setOnClickListener(v -> {
-            if (!viewModel.isFirstQuestion()) iFragmentQuestion.backButton();
+            if (!viewModel.getEventBoolean(EnumEvent.BEFORE_QUESTION)) iFragmentQuestion.backButton();
             else Toast.makeText(getContext(), "Это первый вопрос", Toast.LENGTH_SHORT).show();
         });
     }
@@ -171,9 +180,18 @@ public class QuestionsFragment extends Fragment {
 
     private void setClickListenerStartNewTest() {
         buttonStartTestAgain.setOnClickListener(v -> {
-            viewModel.startNewTest();
+            viewModel.startNewTest(EnumEvent.START_NEW_TEST);
             iFragmentQuestion.startNewTest();
         });
     }
+
+    //При изменении конфигурации заново подгружаем данные
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        viewModel.loadData(EnumEvent.CONFIGURATION_CHANGED);
+//        super.onConfigurationChanged(newConfig);
+//        Log.i("CONFIGURATION", "Configuration Changed");
+//    }
+
 
 }

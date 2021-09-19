@@ -19,6 +19,7 @@ import com.example.miniapptest.screens.question.Question;
 import com.example.miniapptest.R;
 import com.example.miniapptest.screens.interfaces.IFragmentOverview;
 import com.example.miniapptest.screens.viewmodel.ViewModel;
+import com.example.miniapptest.support.EnumEvent;
 
 public class OverviewResponsesFragment extends Fragment {
     private TextView tvShowQuestions;
@@ -32,6 +33,7 @@ public class OverviewResponsesFragment extends Fragment {
     private int ID_COLOR_ANSWER_FALSE;
     private int ID_COLOR_CORRECT_ANSWER;
     private IFragmentOverview iFragmentOverview;
+    private int position;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -46,6 +48,8 @@ public class OverviewResponsesFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
+        position = getArguments().getInt("Key");
+        System.out.println("ПОЗИЦИЯ:" + position);
     }
 
     @Nullable
@@ -58,14 +62,15 @@ public class OverviewResponsesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializationViews(view);
-        LiveData<Question> data = viewModel.loadData();
+
+        LiveData<Question> data = viewModel.loadData(EnumEvent.OVERVIEW_QUESTION, position);
         data.observe(getViewLifecycleOwner(), new Observer<Question>() {
             @Override
             public void onChanged(Question question) {
                 setDataToView(question);
-                if (viewModel.checkAnswerIsResolved()) {
-                    setAnswerIsResolved();
-                }
+//                if (viewModel.getEventBoolean(EnumEvent.CHECK_ANSWER_IS_RESOLVED)) {
+                setColorAnswerIsResolved();
+//                }
             }
         });
         buttonBackToList.setOnClickListener(v -> {
@@ -86,35 +91,23 @@ public class OverviewResponsesFragment extends Fragment {
         ID_COLOR_CORRECT_ANSWER = view.getResources().getColor(R.color.correct_answer);
     }
 
-    private void setAnswerIsResolved() {
+    private void setColorAnswerIsResolved() {
         int ID_COLOR_ANSWER;
-        int indexOfTrueAnswer;
-        if (viewModel.answerIsTrue()) {
+        boolean incorrectAnswer = false;
+        if (viewModel.getEventBoolean(EnumEvent.CHECK_ANSWER_IS_TRUE)) {
             ID_COLOR_ANSWER = ID_COLOR_ANSWER_TRUE;
         } else {
-            indexOfTrueAnswer = viewModel.getIndexTrueAnswer();
+            incorrectAnswer = true;
             ID_COLOR_ANSWER = ID_COLOR_ANSWER_FALSE;
-            setColorToView(indexOfTrueAnswer, ID_COLOR_CORRECT_ANSWER);
-
         }
-        setColorToView(viewModel.getResolvedAnswer(),ID_COLOR_ANSWER);
-    }
-
-    private void setColorToView(int idView, int colorAnswer){
-        switch (idView) {
-            case 0:
-                tvAnswerFirst.setBackgroundColor(colorAnswer);
-                break;
-            case 1:
-                tvAnswerSecond.setBackgroundColor(colorAnswer);
-                break;
-            case 2:
-                tvAnswerThird.setBackgroundColor(colorAnswer);
-                break;
-            case 3:
-                tvAnswerFourth.setBackgroundColor(colorAnswer);
-                break;
+        //Устанавливает в TextView цвет правильного ответа, если пользователь ответил не правильно
+        if (incorrectAnswer) {
+            int indexCorrectAnswer = viewModel.getIndexCorrectAnswer();
+            setBackgroundColorToTextView(indexCorrectAnswer, ID_COLOR_CORRECT_ANSWER);
         }
+        //Устанавливает в TextView цвет выбранного ответа пользователя
+        setBackgroundColorToTextView(viewModel.getIndexOfResolvedAnswer(), ID_COLOR_ANSWER);
+
     }
 
     private void setDataToView(Question question) {
@@ -124,6 +117,23 @@ public class OverviewResponsesFragment extends Fragment {
             tvAnswerSecond.setText(question.getAnswer2());
             tvAnswerThird.setText(question.getAnswer3());
             tvAnswerFourth.setText(question.getAnswer4());
+        }
+    }
+
+    private void setBackgroundColorToTextView(int index, int ID_COLOR_ANSWER){
+        switch (index) {
+            case 0:
+                tvAnswerFirst.setBackgroundColor(ID_COLOR_ANSWER);
+                break;
+            case 1:
+                tvAnswerSecond.setBackgroundColor(ID_COLOR_ANSWER);
+                break;
+            case 2:
+                tvAnswerThird.setBackgroundColor(ID_COLOR_ANSWER);
+                break;
+            case 3:
+                tvAnswerFourth.setBackgroundColor(ID_COLOR_ANSWER);
+                break;
         }
     }
 }

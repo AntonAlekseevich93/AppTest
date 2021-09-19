@@ -1,0 +1,18 @@
+package com.example.miniapptest.support;
+
+public enum EnumEvent {
+    NEW_TEST,
+    NEXT_QUESTION,
+    BEFORE_QUESTION,
+    FINISH_TEST,
+    QUESTION_IS_NOT_RESOLVED,
+    START_FRAGMENT,
+    CHECK_ANSWER_IS_RESOLVED,
+    CHECK_ANSWER_IS_TRUE,
+    OVERVIEW_QUESTION,
+    LAST_TEST,
+    START_NEW_TEST,
+    CONFIGURATION_CHANGED,
+    IS_FIRST_QUESTION
+    ;
+}

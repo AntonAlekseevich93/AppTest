@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.arch.core.util.Function;
@@ -15,11 +14,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.miniapptest.R;
 import com.example.miniapptest.screens.adapter.FinishFragmentAdapter;
 import com.example.miniapptest.screens.interfaces.IFinishFragmentListener;
-import com.example.miniapptest.screens.interfaces.IFragmentQuestion;
 import com.example.miniapptest.screens.viewmodel.ViewModel;
 import com.example.miniapptest.support.EnumEvent;
 
@@ -51,6 +48,7 @@ public class FinishFragment extends Fragment {
                 return null;
             }
         });
+      
     }
 
     @Nullable

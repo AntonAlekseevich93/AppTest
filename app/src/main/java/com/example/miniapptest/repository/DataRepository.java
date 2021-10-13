@@ -24,18 +24,13 @@ import java.util.List;
 public class DataRepository implements LifecycleObserver {
     private List<Question> listOfQuestions;
     private Context context;
-
     private ParserJSON parserJSON;
     private SharedPreferences sharedPreferences;
     private final String APP_PREFERENCES_IS_TEST_STARTED = "isTestStarted";
     private final String APP_PREFERENCES = "mysettings";
     private final String NAME_FILE_FROM_ASSETS_FOLDER = "questions.json";
-//    private final String APP_PREFERENCES_QUESTION_NUMBER_FOR_OVERVIEW = "QuestionNumberOverview";
-//    private final String APP_PREFERENCES_IS_OVERVIEW_RESPONSE = "isOverviewResponse";
-
     private final String FILE_NAME = "DATA";
 
-//    private boolean isFirstQuestion;
 
     public DataRepository(Context context) {
         this.context = context;
@@ -46,9 +41,10 @@ public class DataRepository implements LifecycleObserver {
     public Question getData(EnumEvent enumEvent, int index) {
         switch (enumEvent) {
             case CONFIGURATION_CHANGED:
-                if(!isFileFound()) saveData(); //на случай когда запущен новый тест, открыт первый вопрос, но данные еще не сохранены, при перевороте мы сохраним данные
+                if (!isFileFound())
+                    saveData(); //на случай когда запущен новый тест, открыт первый вопрос, но данные еще не сохранены, при перевороте мы сохраним данные
                 else listOfQuestions = getDataFromFile();
-                    break;
+                break;
             case NEW_TEST:
                 if (isFileFound()) {
                     listOfQuestions = getDataFromFile();
@@ -165,6 +161,7 @@ public class DataRepository implements LifecycleObserver {
         editor.apply();
     }
 
+
     public boolean isTestStarted() {
         boolean testStarted = false;
         if (sharedPreferences.contains(APP_PREFERENCES_IS_TEST_STARTED)) {
@@ -184,61 +181,12 @@ public class DataRepository implements LifecycleObserver {
         return score;
     }
 
-    public int getSizeOfQuestionsList(){
+    public int getSizeOfQuestionsList() {
         return listOfQuestions.size();
     }
 
     public List<Question> getListQuestions() {
         return listOfQuestions;
     }
-
-//    public int getPercentCorrectAnswers() {
-//       return  numberOfCorrectAnswer() / listOfQuestions.size() * 100;
-//    }
-
-
-
-
-//    /**
-//     * Сохраняет номер вопроса
-//     * @param questionNumber - номер вопроса
-//     */
-//    private void saveQuestionNumber(int questionNumber) {
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putInt(APP_PREFERENCES_QUESTION_NUMBER, questionNumber);
-//        editor.apply();
-//    }
-//
-//    /**
-//     * Получает сохраненный ранее номер вопроса
-//     * @return int - номер вопроса
-//     */
-//    public int getSavedQuestionNumber() {
-//        if (sharedPreferences.contains(APP_PREFERENCES_QUESTION_NUMBER)) {
-//            return sharedPreferences.getInt(APP_PREFERENCES_QUESTION_NUMBER, -1);
-//        } else return 0;
-//    }
-
-//    public EnumEvent getEventForNextQuestion() {
-//        if (sizeOfListIsCorrect()) {
-//            increaseQuestionNumber();
-//            return EnumEvent.NEXT_QUESTION;
-//        } else return EnumEvent.FINISH_TEST;
-//    }
-
-//    public Question setAnswerIsSelected(String checkAnswer, int indexOfAnswer) {
-//        listOfQuestions.get(questionNumber).setIndexOfAnswer(indexOfAnswer);
-//        listOfQuestions.get(questionNumber).setNameResolvedAnswer(checkAnswer);
-//        return listOfQuestions.get(questionNumber);
-//
-//    }
-
-//    public boolean isFirstQuestion(){
-//        return isFirstQuestion;
-//    }
-//
-//    private boolean sizeOfListIsCorrect() {
-//        return questionNumber + 1 < listOfQuestions.size();
-//    }
 
 }

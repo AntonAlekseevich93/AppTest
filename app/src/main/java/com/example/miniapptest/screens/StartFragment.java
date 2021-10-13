@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.miniapptest.screens.interfaces.IFragmentStart;
 import com.example.miniapptest.R;
 import com.example.miniapptest.screens.viewmodel.ViewModel;

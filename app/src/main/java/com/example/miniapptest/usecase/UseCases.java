@@ -1,30 +1,13 @@
 package com.example.miniapptest.usecase;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import androidx.lifecycle.LifecycleObserver;
-
 import com.example.miniapptest.repository.DataRepository;
 import com.example.miniapptest.screens.question.Question;
 import com.example.miniapptest.support.EnumEvent;
-
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
-
 public class UseCases {
     private DataRepository dataRepository;
-//    private List<Question> listOfQuestions = new ArrayList<>();
-
-    //    private int lastNumberForSaved;
-//    private static int indexCorrectAnswer;
-//
-//    private static boolean firstLaunch = false;
     private static int questionNumber = -1;
-    //    private Context context;
-    //    private final String FILE_NAME = "DATA";
-//    public static boolean isOverviewResponse = false;
     private Question question;
     private boolean isFirstQuestion;
     private boolean isLastQuestion;
@@ -41,7 +24,6 @@ public class UseCases {
                 break;
 
             case NEW_TEST:
-//            case LAST_TEST:
                 questionNumber = 0;
                 break;
 
@@ -192,11 +174,6 @@ public class UseCases {
         float result = (float) numberOfCorrectAnswer / listSize * 100;
         String format = new DecimalFormat("##").format(result);
         return format + "%";
-
-
-//        String format = new DecimalFormat("##").format(percent);
-//        return format + "%";
-//        return String.valueOf(dataRepository.getPercentCorrectAnswers());
     }
 
     public List<Question> getListQuestions() {
@@ -209,67 +186,6 @@ public class UseCases {
         else if (question.getAnswer3().equals(question.getTrueAnswer())) return 2;
         else return 3;
     }
-
-//    public boolean checkAnswerIsResolved() {
-//        if (questionNumber == -1) return false;
-//        else return listOfQuestions.get(questionNumber).isResolved();
-//    }
-
-//    public boolean isLastQuestion() {
-//        return questionNumber + 1 == listOfQuestions.size();
-//    }
-
-
-//
-
-//
-
-//    private void saveQuestionNumber() {
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putInt(APP_PREFERENCES_QUESTION_NUMBER, questionNumber);
-//        editor.apply();
-//    }
-//
-//    private void saveNumberOfQuestionForOverview() {
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putInt(APP_PREFERENCES_QUESTION_NUMBER_FOR_OVERVIEW, lastNumberForSaved);
-//        editor.putBoolean(APP_PREFERENCES_IS_OVERVIEW_RESPONSE, isOverviewResponse);
-//        editor.apply();
-//    }
-//
-//
-//
-//    private int getNumberOfQuestionForOverview() {
-//        if (sharedPreferences.contains(APP_PREFERENCES_QUESTION_NUMBER_FOR_OVERVIEW) && sharedPreferences.contains(APP_PREFERENCES_IS_OVERVIEW_RESPONSE)) {
-//            lastNumberForSaved = sharedPreferences.getInt(APP_PREFERENCES_QUESTION_NUMBER_FOR_OVERVIEW, -1);
-//            isOverviewResponse = sharedPreferences.getBoolean(APP_PREFERENCES_IS_OVERVIEW_RESPONSE, false);
-//        }
-//        return lastNumberForSaved;
-//    }
-//
-
-//
-//    public void firstLaunchApp() {
-//        questionNumber = -1;
-//        firstLaunch = true;
-//    }
-//
-//
-//    public void setNumberOfQuestionForOverview(int number) {
-//        lastNumberForSaved = questionNumber;
-//        isOverviewResponse = true;
-//        saveNumberOfQuestionForOverview();
-//        questionNumber = number;
-//        saveQuestionNumber();
-//
-//    }
-//
-//    public void returnNumberOfQuestion() {
-//        questionNumber = getNumberOfQuestionForOverview();
-//        isOverviewResponse = false;
-//        saveQuestionNumber();
-//        saveNumberOfQuestionForOverview();
-//    }
 
 
 }

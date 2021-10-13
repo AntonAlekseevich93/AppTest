@@ -1,30 +1,24 @@
 package com.example.miniapptest.screens;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.example.miniapptest.screens.question.Question;
 import com.example.miniapptest.R;
 import com.example.miniapptest.screens.interfaces.IFragmentQuestion;
+import com.example.miniapptest.screens.question.Question;
 import com.example.miniapptest.screens.viewmodel.ViewModel;
 import com.example.miniapptest.support.EnumEvent;
-
-import org.w3c.dom.ls.LSOutput;
 
 public class QuestionsFragment extends Fragment {
     private TextView tvShowQuestions;
@@ -184,14 +178,4 @@ public class QuestionsFragment extends Fragment {
             iFragmentQuestion.startNewTest();
         });
     }
-
-    //При изменении конфигурации заново подгружаем данные
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        viewModel.loadData(EnumEvent.CONFIGURATION_CHANGED);
-//        super.onConfigurationChanged(newConfig);
-//        Log.i("CONFIGURATION", "Configuration Changed");
-//    }
-
-
 }

@@ -1,15 +1,9 @@
 package com.example.miniapptest.support;
 
-import android.content.res.AssetManager;
-
 import com.example.miniapptest.screens.question.Question;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +16,7 @@ public class ParserJSON {
     private final String JSON_NAME_FALSE_ANSWER1 = "falseAnswer1";
     private final String JSON_NAME_FALSE_ANSWER2 = "falseAnswer2";
     private final String JSON_NAME_FALSE_ANSWER3 = "falseAnswer3";
+
 
 
     public List<Question> getListOfQuestionsFromJson(String jsonToParsing) {

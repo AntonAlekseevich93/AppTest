@@ -15,9 +15,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.miniapptest.screens.question.Question;
 import com.example.miniapptest.R;
 import com.example.miniapptest.screens.interfaces.IFragmentOverview;
+import com.example.miniapptest.screens.question.Question;
 import com.example.miniapptest.screens.viewmodel.ViewModel;
 import com.example.miniapptest.support.EnumEvent;
 
@@ -68,9 +68,7 @@ public class OverviewResponsesFragment extends Fragment {
             @Override
             public void onChanged(Question question) {
                 setDataToView(question);
-//                if (viewModel.getEventBoolean(EnumEvent.CHECK_ANSWER_IS_RESOLVED)) {
                 setColorAnswerIsResolved();
-//                }
             }
         });
         buttonBackToList.setOnClickListener(v -> {
@@ -120,7 +118,7 @@ public class OverviewResponsesFragment extends Fragment {
         }
     }
 
-    private void setBackgroundColorToTextView(int index, int ID_COLOR_ANSWER){
+    private void setBackgroundColorToTextView(int index, int ID_COLOR_ANSWER) {
         switch (index) {
             case 0:
                 tvAnswerFirst.setBackgroundColor(ID_COLOR_ANSWER);

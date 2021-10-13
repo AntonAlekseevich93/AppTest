@@ -18,9 +18,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel implements Lifecycle
 
     public ViewModel(UseCases useCases) {
         this.useCases = useCases;
-//        if (mutableLiveData == null) {
-//            mutableLiveData = new MutableLiveData<>();
-//        }
     }
 
     public LiveData<Question> loadData(EnumEvent enumEvent, int position) {
@@ -66,11 +63,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel implements Lifecycle
         }
     }
 
-        public int[] getAmountTrueAnswers() {
+    public int[] getAmountTrueAnswers() {
         return useCases.getAmountTrueAnswers();
     }
 
-        public List<Question> getListQuestions() {
+    public List<Question> getListQuestions() {
         return useCases.getListQuestions();
     }
 
@@ -78,51 +75,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel implements Lifecycle
         return useCases.getPercentCorrectAnswers();
     }
 
-    public int getIndexCorrectAnswer(){
-     return    useCases.getIndexCorrectAnswer();
+    public int getIndexCorrectAnswer() {
+        return useCases.getIndexCorrectAnswer();
     }
 
-
-
-//    public int getIndexTrueAnswer() {
-//        return useCases.getIndexTrueAnswer();
-//    }
-
-//    public boolean answerIsTrue() {
-//        return useCases.answerIsTrue();
-//    }
-
-//    public boolean checkAnswerIsResolved() {
-//        return useCases.checkAnswerIsResolved();
-//    }
-
-//    public boolean isLastQuestion() {
-//        return useCases.isLastQuestion();
-//    }
-//
-//    public boolean isFirstQuestion() {
-//        return useCases.isFirstQuestion();
-//    }
-//
-//
-//
-//
-
-//
-//
-
-//
-
-//
-////    public void firstLaunchApp() {
-////        useCases.firstLaunchApp();
-////    }
-//
-//    public void setNumberOfQuestionForOverview(int number) {
-//        useCases.setNumberOfQuestionForOverview(number);
-//    }
-//
-//    public void returnNumberOfQuestion() {
-//        useCases.returnNumberOfQuestion();
-//    }
 }

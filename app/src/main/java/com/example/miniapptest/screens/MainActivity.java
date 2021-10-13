@@ -1,24 +1,21 @@
 package com.example.miniapptest.screens;
 
+import android.os.Bundle;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
-
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.widget.Toast;
-
+import com.example.miniapptest.R;
 import com.example.miniapptest.repository.DataRepository;
 import com.example.miniapptest.screens.interfaces.IFinishFragmentListener;
 import com.example.miniapptest.screens.interfaces.IFragmentOverview;
+import com.example.miniapptest.screens.interfaces.IFragmentQuestion;
 import com.example.miniapptest.screens.interfaces.IFragmentStart;
-import com.example.miniapptest.R;
+import com.example.miniapptest.screens.viewmodel.ViewModel;
 import com.example.miniapptest.support.EnumEvent;
 import com.example.miniapptest.usecase.UseCases;
-import com.example.miniapptest.screens.interfaces.IFragmentQuestion;
-import com.example.miniapptest.screens.viewmodel.ViewModel;
 
 public class MainActivity extends AppCompatActivity implements IFragmentStart, IFragmentQuestion, IFinishFragmentListener, IFragmentOverview {
     private FragmentManager fragmentManager;
@@ -35,11 +32,10 @@ public class MainActivity extends AppCompatActivity implements IFragmentStart, I
         fragmentManager = getSupportFragmentManager();
         DataRepository dataRepository = new DataRepository(this);
         useCases = new UseCases(dataRepository);
-
         viewModel = new ViewModelProvider(this, new ModelFactory(useCases)).get(ViewModel.class);
-        //При запуске приложения проверяется проходился ли раньше тест, если тест проходился
-        //то будет открыт тест на первом вопросе с ответами пользователя, если первый запуск, то
-        //будет открыт фрагмент для запуска теста
+        /*При запуске приложения проверяется проходился ли раньше тест, если тест проходился
+        то будет открыт тест на первом вопросе с ответами пользователя, если первый запуск, то
+        будет открыт фрагмент для запуска теста*/
         if (savedInstanceState == null) {
             if (dataRepository.isTestStarted()) {
                 viewModel.loadData(EnumEvent.NEW_TEST, 0);
@@ -51,12 +47,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentStart, I
                 dataRepository.testStarted(true);
             }
         }
-//        else {
-//
-////            finishFragmentIsVisible = savedInstanceState.getBoolean(KEY_BUNDLE);
-//        }
-        getLifecycle().addObserver(dataRepository);
-//        getLifecycle().addObserver(viewModel);
     }
 
     @Override
@@ -104,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentStart, I
 
     private void clearBackStack() {
         if (fragmentManager.getBackStackEntryCount() > 0) {
-//            viewModel.clearData();
             FragmentManager.BackStackEntry first = fragmentManager.getBackStackEntryAt(0);
             fragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
@@ -126,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentStart, I
 
     @Override
     public void onNumberOnClick(int position) {
-//        viewModel.setNumberOfQuestionForOverview(position);
         Bundle arguments = new Bundle();
         arguments.putInt("Key", position);
         Fragment fragment = new OverviewResponsesFragment();
@@ -141,10 +129,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentStart, I
     @Override
     public void backToListFromFragmentOverview() {
         fragmentManager.popBackStack();
-//        if (UseCases.isOverviewResponse){
-//            viewModel.returnNumberOfQuestion();
-//            super.onBackPressed();
-//        }
     }
 
     private void newTest() {
@@ -154,6 +138,5 @@ public class MainActivity extends AppCompatActivity implements IFragmentStart, I
                 .addToBackStack(null)
                 .commit();
     }
-
 
 }
